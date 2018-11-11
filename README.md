@@ -2,7 +2,7 @@
 
 This test factory based on Serenity BDD and it is for a demo purpose for Pix4d
 
-## Copy from
+## Project Copy from
 
 https://github.com/serenity-bdd/serenity-cucumber-starter
 
@@ -30,6 +30,7 @@ https://github.com/SeleniumHQ/docker-selenium
 ```
 
 ## Run test
+Before running ensure to have the chrome docker up.
 
 ### Use Gradle
 
@@ -47,18 +48,17 @@ gradle clean test
 ```
 
 ### Run specific tags
-Update in 'build.gradle' the test section. Assuming we wnat ti run only `@FTDemoWebsite` tag:
+Update in 'build.gradle' the test section. Assuming we want to run only `@OnDemandTest` tag:
 
 ```
 test {
     //..
-    systemProperty 'cucumber.options' ,  '-t @FTDemoWebsite'
+    systemProperty 'cucumber.options' ,  '-t @OnDemandTest'
 
 }
 ```
 Also you can find predefined gradle task that run specific tags. Example 
 * `gradle clean smokeTest` runs tag `@FTSmokeTest`
-* `gradle clean demoWebsiteTest` runs tag `@FTDemoWebsite`
 
 ## Screen sizing
 To set the screen sizing during the test and also the size of the screenshot taken, you could update the size in `serenity.preperties` file
