@@ -3,8 +3,11 @@ package com.fanaticaltest.pix4d.pages;
 import net.serenitybdd.core.pages.PageObject;
 import net.serenitybdd.core.pages.WebElementFacade;
 import net.thucydides.core.annotations.DefaultUrl;
+import org.openqa.selenium.By;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
+
+import java.util.Random;
 
 @DefaultUrl("https://stupendous-birth.surge.sh/")
 public class Pix4D  extends PageObject {
@@ -19,31 +22,49 @@ public class Pix4D  extends PageObject {
     @FindBy(xpath="//input[@ng-model='editor.plan.description']")
     WebElementFacade inputFlightPlanDescription;
 
-    private Long wait = new Long(5000L);
+    @FindBy(xpath="//h3[@class='dfp-item-description ng-binding']")
+    WebElementFacade labelFlightPlanDescription;
+
+    @FindBy(xpath="//h4[@class='dfp-item-takeoff ng-binding ng-scope']")
+    WebElementFacade nbPoint;
 
     public void newFlightPlan() {
         addFlightPlanButton.click();
     }
 
-    public void newRandomJourney() {
-        // TODO : A better solution could be to send a api call with the gps position instead of using the UI.
+    public void newRandomJourney()
+    {
         Actions builder = new Actions(getDriver());
-        waitABit(wait); //This is super bad
-        builder.moveToElement(flightPanel, 300, 300).click().build().perform();
-        waitABit(wait); //This is super bad
-        builder.moveToElement(flightPanel, 400, 400).click().build().perform();
-        waitABit(wait); //This is super bad
-        builder.moveToElement(flightPanel, 300, 500).click().build().perform();
-        waitABit(wait);
+        int x = 300;
+        int y = 300;
+
+        for (int i = 1; i<=3 ; i++)
+        {
+            addPointAndCheck(x,y,i,builder);
+            x += 100;
+            y += 100;
+        }
+    }
+
+    private void addPointAndCheck(int x, int y, int checkValue, Actions builder)
+    {
+        int nbOfTry = 0;
+
+        do
+        {
+            builder.moveToElement(flightPanel, x, y).click().build().perform();
+            nbOfTry++;
+        } while (!nbPoint.getText().endsWith(Integer.toString(checkValue)) && nbOfTry < 10);
+
     }
 
     public void addDescription(String description) {
         inputFlightPlanDescription.clear();
         inputFlightPlanDescription.type(description);
-        waitABit(wait);
     }
 
     public void checkDescription(String description) {
-        assert (inputFlightPlanDescription.getText().contains(description));
+        assert (labelFlightPlanDescription.getText().contains(description));
+        waitABit(5000L);// to be removed - just for demo validation - 4-eyes validation : machine + human
     }
 }
