@@ -40,6 +40,10 @@ public class Pix4D  extends PageObject {
     public void addDescription(String description) {
         inputFlightPlanDescription.clear();
         inputFlightPlanDescription.type(description);
-        waitABit(15000L);
+        waitABit(wait);
+    }
+
+    public void checkDescription(String description) {
+        assert (inputFlightPlanDescription.getText().contains(description));
     }
 }

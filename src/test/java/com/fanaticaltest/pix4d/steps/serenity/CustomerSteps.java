@@ -15,5 +15,7 @@ public class CustomerSteps extends ScenarioSteps {
 
     public void creates_a_journey() {pix4d.newRandomJourney();}
 
-    public void add_flight_plan_description(String description) {pix4d.addDescription(description);}
+    public void adds_flight_plan_description(String description) {pix4d.addDescription(description);}
+
+    public void checks_flight_plan_description(String description) {pix4d.checkDescription(description);}
 }

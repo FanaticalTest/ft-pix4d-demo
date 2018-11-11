@@ -1,4 +1,4 @@
-# ft-test-factory-demo
+# ft-pix4d-demo
 
 This test factory based on Serenity BDD and it is for a demo purpose for Pix4d
 
