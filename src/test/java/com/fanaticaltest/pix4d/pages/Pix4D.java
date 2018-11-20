@@ -1,35 +1,24 @@
 package com.fanaticaltest.pix4d.pages;
 
+import com.paulhammant.ngwebdriver.ByAngularBinding;
+import com.paulhammant.ngwebdriver.NgWebDriver;
 import net.serenitybdd.core.pages.PageObject;
-import net.serenitybdd.core.pages.WebElementFacade;
 import net.thucydides.core.annotations.DefaultUrl;
-import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.FindBy;
-
-import java.util.Random;
 
 @DefaultUrl("https://stupendous-birth.surge.sh/")
 public class Pix4D  extends PageObject {
 
-
-    @FindBy(xpath="//button[@class='md-raised md-primary md-button md-ink-ripple']")
-    WebElementFacade addFlightPlanButton;
-
-    @FindBy(xpath="//dfp-editor[@class='layout-row flex']")
-    WebElementFacade flightPanel;
-
-    @FindBy(xpath="//input[@ng-model='editor.plan.description']")
-    WebElementFacade inputFlightPlanDescription;
-
-    @FindBy(xpath="//h3[@class='dfp-item-description ng-binding']")
-    WebElementFacade labelFlightPlanDescription;
-
-    @FindBy(xpath="//h4[@class='dfp-item-takeoff ng-binding ng-scope']")
-    WebElementFacade nbPoint;
+    private static String XPATH_ADDFLIGHT_BUTTON = "//button[@class='md-raised md-primary md-button md-ink-ripple']";
+    private static String XPATH_FLIGHTPANEL = "//dfp-editor[@class='layout-row flex']";
+    private static String XPATH_FLIGHTDESC_INPUT = "//input[@ng-model='editor.plan.description']";
+    private static String XPATH_FLIGHTDESC_LABEL = "//h3[@class='dfp-item-description ng-binding']";
+    private static String XPATH_NBPOINT = "//h4[@class='dfp-item-takeoff ng-binding ng-scope']";
 
     public void newFlightPlan() {
-        addFlightPlanButton.click();
+        find(ByAngularBinding.xpath(XPATH_ADDFLIGHT_BUTTON)).click();
     }
 
     public void newRandomJourney()
@@ -48,23 +37,30 @@ public class Pix4D  extends PageObject {
 
     private void addPointAndCheck(int x, int y, int checkValue, Actions builder)
     {
+        waitAngular(getDriver());
         int nbOfTry = 0;
 
         do
         {
-            builder.moveToElement(flightPanel, x, y).click().build().perform();
+            builder.moveToElement(find(ByAngularBinding.xpath(XPATH_FLIGHTPANEL)), x, y).click().build().perform();
             nbOfTry++;
-        } while (!nbPoint.getText().endsWith(Integer.toString(checkValue)) && nbOfTry < 10);
+        } while (!find(ByAngularBinding.xpath(XPATH_NBPOINT)).getText().endsWith(Integer.toString(checkValue)) && nbOfTry < 10);
 
     }
 
     public void addDescription(String description) {
-        inputFlightPlanDescription.clear();
-        inputFlightPlanDescription.type(description);
+        find(ByAngularBinding.xpath(XPATH_FLIGHTDESC_INPUT)).clear();
+        find(ByAngularBinding.xpath(XPATH_FLIGHTDESC_INPUT)).type(description);
     }
 
     public void checkDescription(String description) {
-        assert (labelFlightPlanDescription.getText().contains(description));
+        assert (find(ByAngularBinding.xpath(XPATH_FLIGHTDESC_LABEL)).getText().contains(description));
         waitABit(5000L);// to be removed - just for demo validation - 4-eyes validation : machine + human
+    }
+
+    private void waitAngular(WebDriver driver)
+    {
+        NgWebDriver ngWebDriver = new NgWebDriver((JavascriptExecutor) driver);
+        ngWebDriver.waitForAngularRequestsToFinish();
     }
 }
